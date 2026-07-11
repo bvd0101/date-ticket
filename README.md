@@ -1,6 +1,7 @@
 HƯỚNG DẪN CÀI ĐẶT HỆ THỐNG VÉ HẸN HÒ
 Hệ thống này sử dụng giao diện tĩnh kết hợp với Google Apps Script (gửi mail) và Cloudflare Workers (trung chuyển API). Làm đúng thứ tự dưới đây để tự tạo hệ thống nhận vé cho riêng bạn.
 
+
 Bước 1: Thiết lập nơi nhận Email (Google Apps Script)
 Truy cập script.google.com và tạo một Dự án mới.
 Xóa mã mặc định, dán đoạn mã này vào:
@@ -39,6 +40,7 @@ Bấm Triển khai (Deploy) -> Bản triển khai mới (New deployment).
 Chọn loại Ứng dụng web (Web app). Quyền truy cập bắt buộc chọn: Bất kỳ ai (Anyone).
 Cấp quyền truy cập Gmail theo yêu cầu. Copy URL Ứng dụng web lưu ra nháp.
 
+
 Bước 2: Thiết lập cổng trung chuyển (Cloudflare Workers)
 Đăng nhập dash.cloudflare.com, vào mục Workers & Pages -> Tạo Worker mới.
 Bấm Edit code, xóa mã mặc định và dán đoạn này vào:
@@ -71,17 +73,19 @@ export default {
 Sửa đúng 2 dòng tôi đã ghi chú viết hoa trong mã. Tuyệt đối không để dấu / ở cuối các đường link.
 Bấm Deploy. Copy đường link Worker (có đuôi .workers.dev).
 
+
 Bước 3: Gắn API vào mã nguồn Frontend
 Mở tệp index.html tải từ kho lưu trữ này.
 Cuộn xuống dòng số 384, tìm hàm fetch("...").
 Thay thế đường link ảo bằng cái đường link Worker bạn vừa copy ở Bước 2.
 Lưu tệp lại.
 
+
 Bước 4: Triển khai và lấy Link gửi đi
 Tạo một kho lưu trữ Public mới trên tài khoản GitHub của bạn.
 Upload tệp index.html đã sửa lên đó.
 Vào tab Settings -> Pages, mục Branch chọn nhánh main và bấm Save.
-Chờ 1 phút để GitHub xuất bản trang web. Bạn sẽ nhận được một đường link dạng [https://ten-cua-ban.github.io/ten-kho-luu-tru/](https://ten-cua-ban.github.io/ten-kho-luu-tru/).
+Chờ 1 phút để GitHub xuất bản trang web. Bạn sẽ nhận được một đường link dạng https://ten-cua-ban.github.io/ten-kho-luu-tru.
 
 Mở link đó bằng tab ẩn danh, điền thử thông tin và kiểm tra hộp thư. Mail nổ thì copy cái link trang web đó gửi cho người bạn muốn rủ đi chơi.
 .
