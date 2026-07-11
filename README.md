@@ -87,4 +87,13 @@ Upload tệp index.html đã sửa lên đó.
 Vào tab Settings -> Pages, mục Branch chọn nhánh main và bấm Save.
 Chờ 1 phút để GitHub xuất bản trang web.
 
+### Ủng hộ tác giả (Donate)
+Nếu bạn thấy mã nguồn này hữu ích và muốn mời tôi một ly cà phê, có thể chuyển khoản qua thông tin dưới đây:
+
+*   **Ngân hàng:** [Techcombank]
+*   **Số tài khoản:** [9868633333]
+*   **Chủ tài khoản:** [BUI VAN DIEP]
+
+<img src="qr-donate.jpg" alt="QR Donate" width="300">
+
 Mở link đó bằng tab ẩn danh, điền thử thông tin và kiểm tra hộp thư. Mail nổ thì copy cái link trang web đó gửi cho người bạn muốn rủ đi chơi.
