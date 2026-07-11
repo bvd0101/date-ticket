@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATE TICKET</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fdf2f8;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 450px;
+            position: relative;
+            min-height: 480px;
+        }
+        
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .step { display: none; }
+        .step.active { 
+            display: block; 
+            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; 
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            height: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #e91e63;
+            width: 20%;
+            transition: width 0.4s ease;
+        }
+        .progress-text {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        h1 { color: #d81b60; font-size: 20px; margin-bottom: 15px; line-height: 1.4; }
+        .meme-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border: 2px solid #fce4ec;
+            background-color: #f5f5f5;
+        }
+
+        #step1 { position: relative; height: 350px; }
+        #btnYes {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #e91e63;
+            color: white;
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+            transition: transform 0.3s ease, background-color 0.2s;
+            position: relative;
+            z-index: 10;
+        }
+        #btnYes:hover { background-color: #c2185b; }
+        
+        #btnNo {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #e0e0e0;
+            color: #555;
+            transition: transform 0.2s ease, left 0.3s ease, top 0.3s ease;
+            position: relative;
+            z-index: 5;
+            margin-left: 10px;
+        }
+
+        .btn-normal {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            background-color: #e91e63; 
+            color: white; 
+            box-shadow: 0 4px 10px rgba(233, 30, 99, 0.3);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .btn-normal:active { transform: scale(0.95); }
+        .btn-normal:hover { background-color: #c2185b; }
+
+        input[type="date"], input[type="time"], input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus { border-color: #e91e63; outline: none; }
+        
+        .food-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .food-item {
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+        .food-item:hover { border-color: #e91e63; transform: translateY(-3px); }
+        .food-item.selected {
+            border-color: #e91e63;
+            background-color: #fce4ec;
+            color: #d81b60;
+            transform: scale(1.05);
+        }
+        
+        .summary-box {
+            text-align: left;
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-size: 15px;
+            border-left: 5px solid #e91e63;
+        }
+        .summary-box p { margin: 8px 0; }
+
+        .ticket-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-top: 15px;
+        }
+
+        .pro-ticket {
+            display: flex;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            border: 2px dashed #e91e63;
+            width: 380px; 
+            min-height: 180px;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+        
+        .ticket-left {
+            background-color: #ffe4e1;
+            color: #333;
+            padding: 25px 15px;
+            width: 65%;
+            text-align: left;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        
+        .ticket-left h2 { margin: 0; color: #d81b60; font-size: 24px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900; position: relative; z-index: 2;}
+        .ticket-left .event-type { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 20px; display: block; font-weight: bold; position: relative; z-index: 2;}
+        
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; position: relative; z-index: 2;}
+        .info-block { display: flex; flex-direction: column; }
+        .info-block span { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 1px; font-weight: bold;}
+        .info-block strong { font-size: 14px; color: #222; margin-top: 4px; }
+        
+        .ticket-right {
+            background: #fff;
+            color: #111;
+            padding: 20px 10px;
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-left: 2px dashed #e91e63;
+            position: relative;
+            box-sizing: border-box;
+        }
+        
+        .ticket-right::before, .ticket-right::after {
+            content: '';
+            position: absolute;
+            left: -1px;
+            width: 20px;
+            height: 20px;
+            background: #fdf2f8;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            z-index: 5;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+        }
+        .ticket-right::before { top: -10px; }
+        .ticket-right::after { bottom: -10px; }
+
+        .barcode {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            height: 45px;
+            margin-bottom: 10px;
+        }
+        .barcode div { background-color: #e91e63; height: 100%; }
+        .b1 { width: 2px; }
+        .b2 { width: 4px; }
+        .b3 { width: 6px; }
+
+        .serial-number { font-family: 'Courier New', Courier, monospace; font-size: 12px; font-weight: bold; color: #d81b60; letter-spacing: 1px; }
+        .status-badge { background: #e91e63; color: white; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: bold; margin-bottom: 15px; text-transform: uppercase;}
+        
+        .rapptor-mark {
+            position: fixed;
+            bottom: 10px;
+            right: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #aaa;
+            z-index: 1000;
+        }
+
+        #loadingText {
+            color: #e91e63;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<audio id="sfxNo" src="https://www.myinstants.com/media/sounds/ack.mp3" preload="auto"></audio>
+<audio id="sfxNext" src="https://www.myinstants.com/media/sounds/anime-wow-sound-effect.mp3" preload="auto"></audio>
+<audio id="sfxCoin" src="https://www.myinstants.com/media/sounds/smw_coin.mp3" preload="auto"></audio>
+<audio id="sfxPrint" src="https://www.myinstants.com/media/sounds/romanceeeeeeeeeeeeee.mp3" preload="auto"></audio>
+
+<div class="rapptor-mark">by Vandiep</div>
+
+<div class="container">
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+    <div class="progress-text" id="progressText">Trang 1 / 5</div>
+
+    <div id="step1" class="step active">
+        <h1>Đi chơi nhé?</h1>
+        <img id="meme1" class="meme-img" src="https://media.giphy.com/media/P01cshOpAntREwfM3u/giphy.gif" alt="page1_yes">
+        <div style="margin-top: 20px; position: relative; height: 100px;">
+            <button id="btnYes" onclick="nextStep(2)">Đi luônnn</button>
+            <button id="btnNo" onclick="shrinkAndMove()">Bận rồii</button>
+        </div>
+    </div>
+
+    <div id="step2" class="step">
+        <h1>Khi nào?</h1>
+        <img class="meme-img" src="https://media.giphy.com/media/W8hVGGjOjV82Rh6Oyi/giphy.gif" alt="page2">
+        <div style="text-align: left;">
+            <label><strong>Ngày (Bắt buộc):</strong></label>
+            <input type="date" id="date">
+            <label><strong>Giờ:</strong></label>
+            <input type="time" id="time">
+        </div>
+        <button class="btn-normal" onclick="nextStep(3)">Tiếp tục</button>
+    </div>
+
+    <div id="step3" class="step">
+        <h1>Đi đâu nhỉ?</h1>
+        <img class="meme-img" src="https://media.giphy.com/media/daLw3QnTCkDjG/giphy.gif" alt="page3">
+        <div class="food-grid">
+            <div class="food-item" onclick="selectFood('Xem phim', this)">Xem phim</div>
+            <div class="food-item" onclick="selectFood('Đi ăn', this)">Đi ăn</div>
+            <div class="food-item" onclick="selectFood('Chơi game', this)">Chơi game</div>
+            <div class="food-item" onclick="selectFood('Sao cũng được', this)">Sao cũng được</div>
+        </div>
+        <button class="btn-normal" onclick="nextStep(4)">Xác nhận</button>
+    </div>
+
+    <div id="step4" class="step">
+        <h1>Kiểm tra lại!</h1>
+        <img class="meme-img" src="https://media.giphy.com/media/d5FbeKADxF3CSf7y1L/giphy.gif" alt="page4">
+        <div class="summary-box">
+            <p><strong>Ngày:</strong> <span id="sum-date"></span></p>
+            <p><strong>Giờ:</strong> <span id="sum-time"></span></p>
+            <p><strong>Kế hoạch:</strong> <span id="sum-food"></span></p>
+        </div>
+        
+        <div style="text-align: left;">
+            <label style="font-size: 14px; font-weight: bold; color: #e91e63;">Email nhận vé:</label>
+            <input type="email" id="guestEmail" placeholder="Nhập email để nhận vé...">
+        </div>
+
+        <button class="btn-normal" onclick="nextStep(5)">Chốt & Gửi Vé</button>
+    </div>
+
+    <div id="step5" class="step">
+        <h1>Your ticket:</h1>
+        
+        <div class="ticket-wrapper">
+            <div class="pro-ticket" id="ticketBlock">
+                <div class="ticket-left">
+                    <h2>DATE TICKET</h2>
+                    <span class="event-type">Official E-Ticket / Dating</span>
+                    
+                    <div class="info-row">
+                        <div class="info-block">
+                            <span>Ngày</span>
+                            <strong id="final-date"></strong>
+                        </div>
+                        <div class="info-block" style="text-align: right;">
+                            <span>Giờ</span>
+                            <strong id="final-time"></strong>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-block">
+                            <span>Kế hoạch</span>
+                            <strong id="final-food"></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="ticket-right">
+                    <span class="status-badge">Confirmed</span>
+                    
+                    <div class="barcode">
+                        <div class="b2"></div><div class="b1"></div><div class="b3"></div><div class="b1"></div>
+                        <div class="b2"></div><div class="b2"></div><div class="b1"></div><div class="b3"></div>
+                        <div class="b1"></div><div class="b2"></div><div class="b2"></div><div class="b1"></div>
+                        <div class="b3"></div><div class="b1"></div><div class="b2"></div><div class="b2"></div>
+                        <div class="b1"></div><div class="b3"></div><div class="b1"></div><div class="b2"></div>
+                    </div>
+
+                    <span class="serial-number" id="serial-num">333-333-3333</span>
+                </div>
+            </div>
+        </div>
+
+        <p id="loadingText">Đang gửi mail...</p>
+    </div>
+</div>
+
+<script>
+    let chosenFood = '';
+    let yesScale = 1;
+    let noScale = 1;
+    let hasGlared = false;
+
+    function playAudio(id) {
+        const audio = document.getElementById(id);
+        if(audio) {
+            audio.load();
+            audio.currentTime = 0;
+            audio.play().catch(e => console.log("Lỗi âm thanh"));
+        }
+    }
+
+    function updateProgress(step) {
+        const percent = (step / 5) * 100;
+        document.getElementById('progressBar').style.width = percent + '%';
+        document.getElementById('progressText').innerText = 'Trang ' + step + ' / 5';
+    }
+
+    function nextStep(step) {
+        if (step === 2) {
+            playAudio('sfxNext');
+        } else if (step === 3 || step === 4) {
+            playAudio('sfxCoin');
+        } else if (step === 5) {
+            playAudio('sfxPrint');
+        }
+
+        if (step === 3) {
+            const d = document.getElementById('date').value;
+            if (!d) {
+                alert("Định bao giờ mới đi?");
+                return;
+            }
+        }
+        if (step === 4) {
+            if (!chosenFood) {
+                alert("Chọn một kế hoạch đi.");
+                return;
+            }
+            
+            const t = document.getElementById('time').value;
+            const displayTime = t ? t : "Cả ngày";
+
+            document.getElementById('sum-date').innerText = document.getElementById('date').value;
+            document.getElementById('sum-time').innerText = displayTime;
+            document.getElementById('sum-food').innerText = chosenFood;
+        }
+        if (step === 5) {
+            const t = document.getElementById('time').value;
+            const displayTime = t ? t : "Cả ngày";
+            const dateVal = document.getElementById('date').value;
+            const guestEmailVal = document.getElementById('guestEmail').value;
+
+            document.getElementById('final-date').innerText = dateVal;
+            document.getElementById('final-time').innerText = displayTime;
+            document.getElementById('final-food').innerText = chosenFood;
+
+            setTimeout(() => {
+                const ticket = document.getElementById('ticketBlock');
+                const loadText = document.getElementById('loadingText');
+                
+                html2canvas(ticket, {
+                    scale: 3, 
+                    backgroundColor: "#ffffff", 
+                    useCORS: true
+                }).then(canvas => {
+                    const base64Image = canvas.toDataURL('image/png');
+                    
+                    fetch("https://late-tooth-46cc.vandiepusa.workers.dev/", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            date: dateVal,
+                            time: displayTime,
+                            food: chosenFood,
+                            guestEmail: guestEmailVal,
+                            image: base64Image
+                        })
+                    }).then(() => {
+                        loadText.innerHTML = `✅ Đã gửi vé thành công về mail: <b>${guestEmailVal ? guestEmailVal : 'của anh'}</b>.<br>Nhấn giữ vào ảnh vé bên trên để lưu về điện thoại.`;
+                        loadText.style.color = "#2e7d32";
+                    }).catch(e => {
+                        loadText.innerText = "Lỗi kết nối. Tự chụp màn hình đi.";
+                    });
+
+                    ticket.innerHTML = `<img src="${base64Image}" style="width: 100%; display: block; border-radius: 8px;" />`;
+                    ticket.style.border = "none"; 
+                    ticket.style.boxShadow = "none";
+
+                }).catch(err => {
+                    loadText.innerText = "Lỗi tạo ảnh. Hệ điều hành đã chặn.";
+                });
+            }, 800); 
+        }
+
+        document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+        document.getElementById('step' + step).classList.add('active');
+        updateProgress(step);
+    }
+
+    function shrinkAndMove() {
+        playAudio('sfxNo');
+
+        if (!hasGlared) {
+            document.getElementById('meme1').src = "https://media.giphy.com/media/NoguHv9Gyz064/giphy.gif";
+            hasGlared = true;
+        }
+
+        const btnYes = document.getElementById('btnYes');
+        const btnNo = document.getElementById('btnNo');
+
+        yesScale += 0.4;
+        noScale -= 0.15;
+        if (noScale < 0.2) noScale = 0.2; 
+
+        btnYes.style.transform = `scale(${yesScale})`;
+        btnNo.style.transform = `scale(${noScale})`;
+
+        const container = document.getElementById('step1');
+        const maxX = container.clientWidth - (btnNo.clientWidth * noScale) - 20;
+        const maxY = container.clientHeight - (btnNo.clientHeight * noScale) - 20;
+        
+        const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+        const randomY = Math.max(10, Math.floor(Math.random() * maxY)); 
+
+        btnNo.style.position = 'absolute';
+        btnNo.style.left = randomX + 'px';
+        btnNo.style.top = randomY + 'px';
+        btnNo.style.margin = '0';
+    }
+
+    function selectFood(food, el) {
+        chosenFood = food;
+        document.querySelectorAll('.food-item').forEach(item => item.classList.remove('selected'));
+        el.classList.add('selected');
+        
+        playAudio('sfxCoin');
+    }
+</script>
+
+</body>
+</html>
