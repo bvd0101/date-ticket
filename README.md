@@ -85,7 +85,6 @@ Bước 4: Triển khai và lấy Link gửi đi
 Tạo một kho lưu trữ Public mới trên tài khoản GitHub của bạn.
 Upload tệp index.html đã sửa lên đó.
 Vào tab Settings -> Pages, mục Branch chọn nhánh main và bấm Save.
-Chờ 1 phút để GitHub xuất bản trang web. Bạn sẽ nhận được một đường link dạng https://ten-cua-ban.github.io/ten-kho-luu-tru.
+Chờ 1 phút để GitHub xuất bản trang web.
 
 Mở link đó bằng tab ẩn danh, điền thử thông tin và kiểm tra hộp thư. Mail nổ thì copy cái link trang web đó gửi cho người bạn muốn rủ đi chơi.
-.
