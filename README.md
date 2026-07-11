@@ -5,7 +5,7 @@ Bước 1: Thiết lập nơi nhận Email (Google Apps Script)
 Truy cập script.google.com và tạo một Dự án mới.
 Xóa mã mặc định, dán đoạn mã này vào:
 
-JavaScript
+```
 function doPost(e) {
   try {
     var data = JSON.parse(e.postData.contents);
@@ -32,6 +32,7 @@ function doPost(e) {
     return ContentService.createTextOutput(JSON.stringify({"error": error.toString()})).setMimeType(ContentService.MimeType.JSON);
   }
 }
+```
 
 Thay dòng ĐIỀN_EMAIL_CỦA_BẠN_VÀO_ĐÂY... thành email thực tế của bạn. Bấm Ctrl + S để lưu.
 Bấm Triển khai (Deploy) -> Bản triển khai mới (New deployment).
@@ -42,7 +43,7 @@ Bước 2: Thiết lập cổng trung chuyển (Cloudflare Workers)
 Đăng nhập dash.cloudflare.com, vào mục Workers & Pages -> Tạo Worker mới.
 Bấm Edit code, xóa mã mặc định và dán đoạn này vào:
 
-JavaScript
+```
 export default {
   async fetch(request, env) {
     const allowedOrigin = "https://TEN_TAI_KHOAN_GITHUB.github.io"; // ĐIỀN LINK GITHUB PAGES CỦA BẠN VÀO ĐÂY
@@ -65,6 +66,7 @@ export default {
     return new Response("Not found", { status: 404 });
   }
 };
+```
 
 Sửa đúng 2 dòng tôi đã ghi chú viết hoa trong mã. Tuyệt đối không để dấu / ở cuối các đường link.
 Bấm Deploy. Copy đường link Worker (có đuôi .workers.dev).
